@@ -100,7 +100,7 @@ table.mini th, table.mini td { text-align: left; padding: 7px 8px; border-bottom
 table.mini th { color: var(--mute); font-weight: 500; font-size: 12.5px; }
 table.mini td.hi { color: var(--acc); font-weight: 600; }
 .bars { display: grid; gap: 8px; margin-top: 6px; }
-.bar { display: grid; grid-template-columns: 52px 1fr 52px; gap: 10px; align-items: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.bar { display: grid; grid-template-columns: 72px 1fr 52px; gap: 10px; align-items: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
 .bar i { display: block; height: 10px; border-radius: 99px; background: var(--bg2); position: relative; overflow: hidden; }
 .bar i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--acc); border-radius: 99px; transform-origin: left; }
 .js .bar i::after { transform: scaleX(0); transition: transform 1s cubic-bezier(.2,.7,.2,1); }
@@ -255,6 +255,31 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
 
     <article class="case reveal">
       <div>
+        <h3>pg-hybrid-search</h3>
+        <p class="kind">Retrieval · TypeScript · PostgreSQL · pgvector · Docker</p>
+        <p><b>Question:</b> can Postgres alone do hybrid search well, and what does it take?</p>
+        <p>Full-text, BM25 and pgvector retrieval fused with reciprocal rank fusion in a single SQL statement, benchmarked on BEIR SciFact (300 expert-judged claims, 5,183 abstracts). The same tests run on PGlite (Postgres 18 in WASM) and on a real pgvector server in CI, which caught two portability bugs the in-process run could not show.</p>
+        <p>Findings: hybrid search only helped with real BM25. Built on Postgres's own <code>ts_rank_cd</code>, which has no IDF, fusion made the top 10 worse than vectors alone. And pgvector's default <code>ef_search</code> silently returned 40 rows when asked for 100.</p>
+        <div class="tags"><span class="tag">pgvector</span><span class="tag">HNSW</span><span class="tag">BM25</span><span class="tag">RRF in SQL</span><span class="tag">Docker</span><span class="tag">14 tests · 2 engines</span></div>
+        <div class="links"><a href="https://github.com/shubhankar360/pg-hybrid-search">Code &amp; benchmark →</a></div>
+      </div>
+      <div class="panel">
+        <h4>nDCG@10 · BEIR SciFact</h4>
+        <div class="bars">
+          <div class="bar"><span>BM25+vec</span><i style="--w:71.2%"></i><span>0.712</span></div>
+          <div class="bar"><span>BM25</span><i style="--w:68.9%"></i><span>0.689</span></div>
+          <div class="bar"><span>vector</span><i style="--w:64.3%"></i><span>0.643</span></div>
+          <div class="bar"><span>ts+vec</span><i style="--w:59.7%"></i><span>0.597</span></div>
+          <div class="bar"><span>ts_rank</span><i style="--w:36.2%"></i><span>0.362</span></div>
+        </div>
+        <ul class="metric-list" style="margin-top:18px">
+          <li><b>40 / 100</b><span>rows pgvector returned at its default <code>ef_search</code>; recall fell 0.925 → 0.875 with no error</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div>
         <h3>hybrid-rag-eval</h3>
         <p class="kind">Retrieval evaluation · Python</p>
         <p><b>Question:</b> does hybrid search actually beat BM25?</p>
@@ -342,7 +367,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
       <dl>
         <div><dt>LLM systems</dt><dd>Anthropic Claude, OpenAI and Gemini APIs · tool calling · structured output · agents · MCP</dd></div>
         <div><dt>Retrieval &amp; evaluation</dt><dd>BM25, dense and hybrid search · reranking · Recall@k, MRR, nDCG · pass^k · judge calibration · paired significance tests</dd></div>
-        <div><dt>Backend &amp; data</dt><dd>Python · FastAPI · Pydantic · SQL / SQLite / MySQL · Node.js · PHP · webhooks · crawlers and ETL</dd></div>
+        <div><dt>Backend &amp; data</dt><dd>Python · TypeScript · FastAPI · PostgreSQL (full-text, BM25, pgvector) · SQLite / MySQL · Node.js · PHP · Docker · webhooks · crawlers and ETL</dd></div>
         <div><dt>Web</dt><dd>TypeScript · JavaScript · WebGL / GLSL · performance profiling · GitHub Actions</dd></div>
         <div><dt>Working</dt><dd>Remote and async · UTC+5:30, overlapping UK/EU hours or US-East mornings · contractor or EOR · English (fluent), Hindi (native)</dd></div>
       </dl>
