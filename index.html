@@ -192,8 +192,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
     </div>
     <div class="facts">
       <div class="fact"><b>125</b><span>end-to-end checks on the accounts platform I run, 112 of them against production</span></div>
-      <div class="fact"><b>κ −0.40</b><span>agreement of a transcript-only grader with ground truth, measured in agentcheck</span></div>
-      <div class="fact"><b>40×</b><span>faster: BM25 beat hybrid retrieval at Recall@3 in my benchmark</span></div>
+      <div class="fact"><b>κ −0.40</b><span>agreement of a transcript-only grader with ground truth on scripted test agents, measured in agentcheck</span></div>
+      <div class="fact"><b>0.712</b><span>nDCG@10 for BM25 + vector hybrid search inside Postgres on BEIR SciFact, vs 0.643 for vectors alone</span></div>
       <div class="fact"><b>12,523</b><span>job postings ranked per run by job-radar, a pipeline I built for my own search</span></div>
     </div>
   </div>
@@ -212,7 +212,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
         <p class="kind">Agent evaluation · Python · Anthropic SDK</p>
         <p><b>Question:</b> when you grade a tool-using agent from its conversation, what do you miss?</p>
         <p>A deterministic back-office world with seven tools and 36 tasks. Every run is graded on the <i>end state</i> of the world, a zero-tolerance <i>policy</i> check over the action log, and the facts in the answer. The environment enforces physics but not policy, so violations happen and get caught rather than being prevented and hidden.</p>
-        <p>Findings: a grader that reads only the transcript agreed with ground truth <b>worse than chance</b> on the agent that skips checks, passing 16 runs that broke policy and failing every correct refusal. And an agent that looks 96% reliable per attempt gets all eight attempts right on only 75% of tasks.</p>
+        <p>Findings, on scripted reference agents with known behaviour: a grader that reads only the transcript agreed with ground truth <b>worse than chance</b> on the agent that skips checks, passing 16 runs that broke policy and failing every correct refusal. And an agent that looks 96% reliable per attempt gets all eight attempts right on only 75% of tasks. Real-model runs plug in through a Claude adapter on the Anthropic SDK.</p>
         <div class="tags"><span class="tag">pass^k</span><span class="tag">Cohen's κ</span><span class="tag">McNemar</span><span class="tag">tool use</span><span class="tag">22 tests</span></div>
         <div class="links"><a href="https://github.com/shubhankar360/agentcheck">Code &amp; report →</a></div>
       </div>
@@ -247,7 +247,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
         <ul class="metric-list">
           <li><b>23 → 2</b><span>homepage stylesheets; 26 scripts → 1; HTML 123 kB → 36 kB</span></li>
           <li><b>6 → 55 fps</b><span>after profiling found <code>backdrop-filter</code> eating ~80% of the frame budget</span></li>
-          <li><b>~4×</b><span>cheaper video: keyframe-then-animate vs the platform's default workflow, priced per model before committing</span></li>
+          <li><b>~4×</b><span>cheaper video on a 25-second Short: keyframe-then-animate vs Higgsfield's built-in narrated-video workflow, priced per model before committing</span></li>
           <li><b>~920</b><span>UK companies verified by a Python crawler + Companies House pipeline</span></li>
         </ul>
       </div>
@@ -283,14 +283,14 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
         <h3>hybrid-rag-eval</h3>
         <p class="kind">Retrieval evaluation · Python</p>
         <p><b>Question:</b> does hybrid search actually beat BM25?</p>
-        <p>Four retrieval stacks (BM25, dense, reciprocal rank fusion, fusion plus cross-encoder rerank) on a labelled query set, scored on Recall@k, MRR, nDCG and latency. BM25 and RRF are implemented directly so a result can be attributed to a stage.</p>
-        <p>The result contradicted the consensus: fusion did not beat its best leg, and BM25 won Recall@3 while running 40× faster. I published it as measured, with the split by query wording that explains why.</p>
+        <p>Four retrieval stacks (BM25, dense, reciprocal rank fusion, fusion plus rerank) on 56 passages and 30 labelled queries, scored on Recall@k, MRR, nDCG and latency. BM25 and RRF are implemented directly so a result can be attributed to a stage; it runs offline on LSA embeddings, with sentence-transformers and a cross-encoder as drop-in upgrades.</p>
+        <p>On that small, vocabulary-consistent corpus, fusion did not beat its best leg, and BM25 won Recall@3 while running 40× faster. I published it as measured, with the split by query wording that explains why, and later found the opposite at scale: on BEIR SciFact, BM25 + vector fusion beat both legs (pg-hybrid-search, above).</p>
         <div class="tags"><span class="tag">BM25</span><span class="tag">RRF</span><span class="tag">reranking</span><span class="tag">nDCG</span><span class="tag">27 tests</span></div>
         <div class="links"><a href="https://github.com/shubhankar360/hybrid-rag-eval">Code &amp; results →</a></div>
       </div>
       <div class="panel">
         <h4>rag-document-qa · a companion finding</h4>
-        <p style="margin:0 0 12px;color:var(--ink2);font-size:15px">A similarity threshold is the usual way to make RAG refuse unanswerable questions. Measured on the sample corpus, it can't:</p>
+        <p style="margin:0 0 12px;color:var(--ink2);font-size:15px">A similarity threshold is the usual way to make RAG refuse unanswerable questions. Measured on the sample corpus with the offline embedder, it can't:</p>
         <ul class="metric-list">
           <li><b>0.907</b><span>similarity of an off-topic question</span></li>
           <li><b>0.905</b><span>similarity of a relevant one</span></li>
@@ -345,7 +345,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
     <h2>Four habits that show up <em>in every repo</em>.</h2>
     <div class="principles reveal" style="margin-top:32px">
       <div class="principle"><h3>Measure before claiming</h3><p>Profile before optimising, evaluate before calling something "better". When the numbers disagree with the blog posts, I publish the numbers.</p></div>
-      <div class="principle"><h3>Test the real system</h3><p>My worst bug passed every HTML-level test while the pricing table was invisible in the browser. Now I verify what users see, and run checks against production.</p></div>
+      <div class="principle"><h3>Test the real system</h3><p>My worst bug passed every HTML-level test while the pricing table was invisible in the browser. Now content is only hidden for a reveal when JavaScript is running, the build fails any price not already in the HTML, and the accounts suite runs against production.</p></div>
       <div class="principle"><h3>Reproducible from a clean checkout</h3><p>No key, no network, no "works on my machine": every AI repo has offline fallbacks, and CI asserts it on each push.</p></div>
       <div class="principle"><h3>Decisions written where the work lives</h3><p>Each non-obvious choice goes in the README or commit with the measurement that settled it, so anyone can pick up a thread without a meeting.</p></div>
     </div>
@@ -358,7 +358,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
       <p class="eyebrow">Experience</p>
       <ul class="xp">
         <li><span class="when">Jul 2026 – present</span><h3>Founder &amp; Lead Engineer, Solquara</h3><p>Sole engineer on a live AI video-ad and automation platform: architecture, AI pipeline, testing, deploys, incident repair.</p></li>
-        <li><span class="when">2024 – present</span><h3>Independent AI &amp; ML Engineer</h3><p>Open-source RAG, evaluation and agent-tooling projects, each tested in CI.</p></li>
+        <li><span class="when">2024 – present</span><h3>Independent ML &amp; AI Practitioner</h3><p>Self-directed ML and AI projects; the RAG, evaluation and agent-tooling repos above are public and tested in CI.</p></li>
         <li><span class="when">2016 – 2024</span><h3>Operations &amp; Client Services, family handicraft business</h3><p>Ran daily operations with no supervisor: inventory, fulfilment, pricing, after-sales, 20+ client conversations a day. Where the ownership habits come from.</p></li>
       </ul>
     </div>
