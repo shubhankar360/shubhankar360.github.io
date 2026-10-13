@@ -273,6 +273,32 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
     </article>
     <article class="case reveal">
       <div>
+        <h3>lora-intents<span class="new">Oct 2026</span></h3>
+        <p class="kind">Fine-tuning · Python · PyTorch · Transformers · PEFT</p>
+        <p><b>Question:</b> how many labelled examples does a LoRA adapter need before it beats the cheap options?</p>
+        <p>Learning curves on Banking77 (77 banking intents) from 5 examples per intent to all 10,003: TF-IDF, a frozen MiniLM sentence encoder with logistic regression, a rank-8 LoRA adapter, and a full fine-tune, in plain PyTorch on a laptop CPU. All the MiniLM methods read the same mean-pooled embedding, so only the way the backbone is updated differs.</p>
+        <p>Findings: the frozen encoder matched or beat LoRA at every data size and trained in minutes rather than half an hour. A full fine-tune only edged ahead with all the data (93.2% vs 93.0%, one seed). For an intent router, start frozen and fine-tune only when the embedding is the problem.</p>
+        <div class="tags"><span class="tag">LoRA</span><span class="tag">PEFT</span><span class="tag">learning curves</span><span class="tag">3 seeds</span><span class="tag">7 tests</span></div>
+        <div class="links"><a href="https://github.com/shubhankar360/lora-intents">Code &amp; results →</a></div>
+      </div>
+      <div class="panel">
+        <h4>Accuracy by labelled examples per intent</h4>
+        <table class="mini">
+          <thead><tr><th>method</th><th>5</th><th>20</th><th>all</th></tr></thead>
+          <tbody>
+            <tr><td>TF-IDF</td><td>54.5%</td><td>77.0%</td><td>89.4%</td></tr>
+            <tr><td>frozen MiniLM</td><td class="hi">80.3%</td><td class="hi">88.3%</td><td>93.0%</td></tr>
+            <tr><td>LoRA, rank 8</td><td>78.0%</td><td>87.7%</td><td>92.5%</td></tr>
+            <tr><td>full fine-tune</td><td>&ndash;</td><td>&ndash;</td><td class="hi">93.2%</td></tr>
+          </tbody>
+        </table>
+        <ul class="metric-list" style="margin-top:18px">
+          <li><b>3 min</b><span>to embed all the data and train the frozen-encoder classifier, against 36 min for LoRA on the same CPU</span></li>
+        </ul>
+      </div>
+    </article>
+    <article class="case reveal">
+      <div>
         <h3>agentcheck</h3>
         <p class="kind">Agent evaluation · Python · Anthropic SDK</p>
         <p><b>Question:</b> when you grade a tool-using agent from its conversation, what do you miss?</p>
@@ -418,7 +444,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
       <p class="eyebrow">Experience</p>
       <ul class="xp">
         <li><span class="when">Jul 2026 – present</span><h3>Founder &amp; Lead Engineer, Solquara</h3><p>Sole engineer on a live AI video-ad and automation platform: architecture, AI pipeline, testing, deploys, incident repair.</p></li>
-        <li><span class="when">2024 – present</span><h3>Independent ML &amp; AI Practitioner</h3><p>Self-directed ML and AI projects; the agent, voice, retrieval and evaluation repos above are public and tested in CI.</p></li>
+        <li><span class="when">2024 – present</span><h3>Independent ML &amp; AI Practitioner</h3><p>Self-directed ML and AI projects; the agent, voice, fine-tuning, retrieval and evaluation repos above are public and tested in CI.</p></li>
         <li><span class="when">2016 – 2024</span><h3>Operations &amp; Client Services, family handicraft business</h3><p>Ran daily operations with no supervisor: inventory, fulfilment, pricing, after-sales, 20+ client conversations a day. Where the ownership habits come from.</p></li>
       </ul>
     </div>
@@ -426,7 +452,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
       <p class="eyebrow">Toolkit</p>
       <dl>
         <div><dt>LLM systems</dt><dd>Anthropic Claude, OpenAI and Gemini APIs · LangGraph (checkpointing, human-in-the-loop) · tool calling · structured output · policy guards · MCP</dd></div>
-        <div><dt>Speech</dt><dd>Streaming speech-to-text (Vosk) · text-to-speech · voice activity detection and endpointing · word error rate</dd></div>
+        <div><dt>Speech &amp; ML</dt><dd>Streaming speech-to-text (Vosk) · text-to-speech · voice activity detection and endpointing · PyTorch · Hugging Face Transformers · LoRA (PEFT) · scikit-learn</dd></div>
         <div><dt>Retrieval &amp; evaluation</dt><dd>BM25, dense and hybrid search · reranking · Recall@k, MRR, nDCG · pass^k · judge calibration · paired significance tests</dd></div>
         <div><dt>Backend &amp; cloud</dt><dd>Python · TypeScript · FastAPI · PostgreSQL (full-text, BM25, pgvector) · SQLite / MySQL · Node.js · PHP · Docker · Terraform · Google Cloud Run · Workload Identity Federation · webhooks · crawlers and ETL</dd></div>
         <div><dt>Web</dt><dd>TypeScript · JavaScript · WebGL / GLSL · performance profiling · GitHub Actions</dd></div>
@@ -444,7 +470,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wr
       <p class="intro" style="margin-bottom:24px">The same facts as this page, laid out for an applicant tracking system: one column, plain headings, no tables.</p>
       <ul class="cv-meta">
         <li>Founder and lead engineer at Solquara since July 2026; eight years of operations and client work before that</li>
-        <li>Projects: handoff-graph, agentcheck, voice-latency, pg-hybrid-search, aistudio-mcp and rag-document-qa</li>
+        <li>Projects: handoff-graph, agentcheck, voice-latency, lora-intents, pg-hybrid-search, aistudio-mcp and rag-document-qa</li>
         <li>Remote from Delhi (UTC+5:30) as a contractor or through an employer of record, or relocation</li>
       </ul>
       <div class="cta">
